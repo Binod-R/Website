@@ -28,7 +28,7 @@ document.addEventListener("DOMContentLoaded", () => {
     .then(() => {
       statusMsg.textContent = "Redirecting...";
       setTimeout(() => {
-        window.location.href = "https://forms.gle/JAM6tU6od5x4x4mf8";
+        window.location.href = "google.com";
       }, 1000);
     })
     .catch((err) => {
